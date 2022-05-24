@@ -1,3 +1,12 @@
+// TO DO
+// Finish spaghetti code
+
+
+// NOTES
+// So much refactoring to do. The repetition with buttons and functions to call new questions is so bad. The question numbers might need even match up around 8-10? 
+
+
+
 // Selecting UI Elements
 const startButton = document.getElementById('start-btn')
 const nextButton = document.getElementById('next-btn')
@@ -12,6 +21,8 @@ const yesButton8 = document.getElementById('yes-btn8')
 const noButton8 = document.getElementById('no-btn8')
 const yesButton9 = document.getElementById('yes-btn9')
 const noButton9 = document.getElementById('no-btn9')
+const yesButton10 = document.getElementById('yes-btn10')
+const noButton10 = document.getElementById('no-btn10')
 const questionContainerElement = document.getElementById('question-container')
 const questionElement = document.getElementById('question')
 const inputContainerElement = document.getElementById('input-container')
@@ -33,6 +44,9 @@ yesButton8.addEventListener('click', nextQuestion)
 noButton8.addEventListener('click', failQuestion)
 yesButton9.addEventListener('click', failQuestion)
 noButton9.addEventListener('click', nextQuestion)
+// Question #10 still has the buttons of #9
+yesButton10.addEventListener('click', nextQuestion)
+noButton10.addEventListener('click', failQuestion)
 
 // the static object data that will be injected as the user advances through the single page application.
 const questions = [
@@ -89,10 +103,16 @@ const questions = [
     failCopy: 'Your $<low_interest_debt> of low interest debt will be a continued growing expense.',
   },
   {
-    levelType: 'Q10',
-    question: 'Question 10',
-    successCopy: 'Level 7 Complete! ',
-    failCopy: 'Fail level 7',
+    levelType: 'contributeIRA',
+    question: 'Have you contributed $6000 to your Individual Retirement Account (IRA) for 2022?',
+    successCopy: 'Level 7 Complete! Keep getting those tax free gains! IRAs are cheat codes.',
+    failCopy: 'Fail. need to contribute to IRA',
+  },
+  {
+    levelType: 'Q11',
+    question: 'Congratulations, you are in a great spot! From here you can explore a number of options for what to do with your extra savings: HSA, 401k, building your savings for a bigger purchase, etc',
+    successCopy: 'Level 8 Complete!',
+    failCopy: 'Fail level 8',
   }  
 ]
 
@@ -111,9 +131,9 @@ function startGame() {
 // What runs when a user clicks next. Probably needs a new name.
 function nextQuestion() {
   // Throws an error if the value field is blank
-  if(inputValue.value === '' && currentQuestionIndex != 2 && currentQuestionIndex != 3) {
-    alert('Add an amount');
-  }
+  // if(inputValue.value === '' && currentQuestionIndex != 2 && currentQuestionIndex != 3) {
+  //   alert('Add an amount');
+  // }
   // Using if functions to determine what part of the game they are on. Based on their input, we run a calculation to see if they passed the level.
   if (currentQuestionIndex === 0) {
     // Stores key:value in localstorage. Key = type of value user just input. Value = What they input.
@@ -283,12 +303,23 @@ function nextQuestion() {
     // Append li to ul
     finances.appendChild(li);
     //Move on
-    displayNextQuestion();
+    displayQuestion10();
   }
   else if (currentQuestionIndex === 9) {
     console.log('question 10')
+    //Create li element
+    const li = document.createElement('li');
+    // Add class
+    li.className = 'finances-item';
+    // Appends the label to the finances item
+    li.appendChild(document.createTextNode(questions[currentQuestionIndex].successCopy));
+    // Append li to ul
+    finances.appendChild(li);
+    displayGameWon();
   }
-
+  else if (currentQuestionIndex === 10) {
+    console.log('question 11')
+  }
   
   else {
     console.log('final else ran... something must be wrong with your program!')
@@ -386,14 +417,38 @@ function displayQuestion8() {
 function displayQuestion9() {
     //Increments to the next question
     currentQuestionIndex++
+    console.log('question 9 displayed')
     // Displays the next question
     questionElement.innerText = questions[currentQuestionIndex].question
+    // 
+    yesButton8.classList.add('hide')
+    // 
+    noButton8.classList.add('hide')
     // Hides Yes Button from Q6
     yesButton9.classList.remove('hide')
     // Hides No Button from Q6
     noButton9.classList.remove('hide')
     // Shows calcuate button
     calculateButton.classList.add('hide')
+}
+
+function displayQuestion10() {
+  //Increments to the next question
+  currentQuestionIndex++
+  console.log('question 10 displayed')
+  // Displays the next question
+  questionElement.innerText = questions[currentQuestionIndex].question
+  // Hides Yes Button from Q9
+  yesButton9.classList.add('hide')
+  // Hides No Button from Q9
+  noButton9.classList.add('hide')
+  // Shows Yes Button for Q10
+  yesButton10.classList.remove('hide')
+  // Shows No Button for Q10
+  noButton10.classList.remove('hide')
+  // DONT THINK I NEED THIS ON THIS FUNCTION. ONLY ON THE QUESTION AFTER CALCULATE
+  // Shows calcuate button
+  // calculateButton.classList.add('hide')
 }
 
 function skipQuestion5(){
@@ -416,6 +471,7 @@ function skipQuestion5(){
 }
 
 function skipQuestion8() {
+  console.log('question 8 skipped')
   //Create li element
   const li = document.createElement('li');
   // Add class
@@ -446,6 +502,14 @@ function failQuestion() {
   yesButton8.classList.add('hide')
   noButton8.classList.add('hide')
   gameOver();
+}
+
+function displayGameWon() {
+  currentQuestionIndex++
+  console.log('gamewondisplayed')
+  questionElement.innerText = questions[currentQuestionIndex].question
+  yesButton10.classList.add('hide')
+  noButton10.classList.add('hide')
 }
 
 function gameOver() {
